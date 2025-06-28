@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>CUM Maker – Final Reset + Download Fix</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: 'Chewy', cursive;
+      text-align: center;
+    }
+    #canvas-container {
+      margin: 20px auto;
+      width: 512px;
+      height: 512px;
+    }
+    canvas {
+      border: 3px dashed #ff69b4;
+      display: block;
+      margin: 0 auto;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 9999px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 2px solid white;
+    }
+    .pink {
+      background: linear-gradient(to right, #ff66cc, #ff1493);
+      color: white;
+    }
+    .yellow {
+      background: linear-gradient(to right, #fff44f, #ffc107);
+      color: black;
+    }
+    .drip-thumb {
+      width: 64px;
+      margin: 4px;
+      cursor: pointer;
+    }
+    #imageInput {
+      display: none;
+    }
+    a {
+      text-decoration: none;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
+</head>
+<body>
+  <h1 style="font-size: 3em;">💦 CUM COIN</h1>
+  <div>
+    <a href="https://x.com" class="btn pink">💦 Join CUMmunity</a>
+    <a href="https://pump.fun" class="btn yellow">🚀 Buy $CUM</a>
+  </div>
+
+  <input type="file" id="imageInput" accept="image/*">
+  <div id="canvas-container" onclick="triggerUpload()">
+    <canvas id="cumCanvas" width="512" height="512"></canvas>
+  </div>
+
+  <div id="dripList"></div>
+
+  <div style="margin-top: 10px;">
+    <button onclick="downloadImage()" class="btn pink">Download</button>
+    <button onclick="resetCanvas()" class="btn yellow">Reset</button>
+  </div>
+
+  <script>
+    const canvas = new fabric.Canvas('cumCanvas', { preserveObjectStacking: true });
+    const loadingDrips = new Set();
+    const imageInput = document.getElementById('imageInput');
+
+    function triggerUpload() {
+      if (!canvas.backgroundImage) imageInput.click();
+    }
+
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        fabric.Image.fromURL(reader.result, (img) => {
+          img.set({ selectable: false });
+          img.scaleToWidth(canvas.width);
+          canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function addDrip(src) {
+      const key = Math.random().toString(36).substring(2);
+      loadingDrips.add(key);
+      fabric.Image.fromURL(src, (img) => {
+        img.set({
+          left: 100 + Math.random() * 150,
+          top: 100 + Math.random() * 150,
+          scaleX: 0.5,
+          scaleY: 0.5
+        });
+        canvas.add(img);
+        canvas.renderAll();
+        setTimeout(() => loadingDrips.delete(key), 100);
+      });
+    }
+
+    function downloadImage() {
+      if (loadingDrips.size > 0) {
+        setTimeout(downloadImage, 200);
+        return;
+      }
+      canvas.discardActiveObject();
+      canvas.renderAll();
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = canvas.width;
+      exportCanvas.height = canvas.height;
+      const ctx = exportCanvas.getContext('2d');
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+      ctx.drawImage(canvas.lowerCanvasEl, 0, 0);
+      exportCanvas.toBlob((blob) => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'cumified.png';
+        link.click();
+      }, 'image/png');
+    }
+
+    function resetCanvas() {
+      canvas.clear();
+      canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
+    }
+
+    const dripList = document.getElementById('dripList');
+    for (let i = 1; i <= 9; i++) {
+      const img = document.createElement('img');
+      img.src = 'cum/cum' + i + '.png';
+      img.className = 'drip-thumb';
+      img.onclick = () => addDrip(img.src);
+      dripList.appendChild(img);
+    }
+  </script>
+</body>
+</html>
