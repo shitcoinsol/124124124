@@ -117,19 +117,11 @@
       }
       canvas.discardActiveObject();
       canvas.renderAll();
-      const exportCanvas = document.createElement('canvas');
-      exportCanvas.width = canvas.width;
-      exportCanvas.height = canvas.height;
-      const ctx = exportCanvas.getContext('2d');
-      ctx.fillStyle = "#000";
-      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-      ctx.drawImage(canvas.lowerCanvasEl, 0, 0);
-      exportCanvas.toBlob((blob) => {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'cumified.png';
-        link.click();
-      }, 'image/png');
+      const dataURL = canvas.toDataURL({ format: 'png' });
+      const link = document.createElement('a');
+      link.href = dataURL;
+      link.download = 'cumified.png';
+      link.click();
     }
 
     function resetCanvas() {
