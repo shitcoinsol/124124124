@@ -140,10 +140,11 @@
       link.click();
     }
 
-    function resetCanvas() {
-      canvas.clear();
-      canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
-    }
+function resetCanvas() {
+  canvas.clear();
+  canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
+  document.getElementById('uploadLabel').style.display = 'block'; // ← 이 줄 추가
+}
 
     const dripList = document.getElementById('dripList');
     for (let i = 1; i <= 9; i++) {
